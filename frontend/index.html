@@ -3,14 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="./style.css">
     <title>Simple Web App</title>
 </head>
 <body>
-<h1>Voronoi & Delaunay!</h1>
 
-<button id="getDelaunayData">Get Delaunay Data</button>
-<div id="delaunayResult"></div>
+<main style="display: flex; flex-direction: row; height: 100%; width: 100%">
+    <section style="width: 30%">
+        <h3 style="margin-bottom: 10px">Diagram size</h3>
+        <div style="display: flex; justify-content: flex-start; margin-bottom: 25px">
+            <div>
+                <label for="inputWidth">Width:</label>
+                <br>
+                <input type="number" id="inputWidth" value="3000">
+            </div>
+
+            <span style="margin-right: 15px"></span>
+
+            <div>
+                <label for="inputHeight">Height:</label>
+                <br>
+                <input type="number" id="inputHeight" value="2500">
+
+            </div>
+        </div>
+
+        <h3 style="margin-bottom: 10px">Other settings</h3>
+        <div style="display: flex; justify-content: flex-start; margin-bottom: 25px">
+            <div>
+                <label for="circleRadius">Max circle radius:</label>
+                <br>
+                <input type="number" id="circleRadius" value="500">
+            </div>
+
+            <span style="margin-right: 15px"></span>
+
+            <div>
+                <label for="maxCaveSize">Max Cave size:</label>
+                <br>
+                <input type="number" id="maxCaveSize" value="50">
+            </div>
+        </div>
+
+        <h3 style="margin-bottom: 10px">Initial data</h3>
+        <div style="display: flex; justify-content: flex-start; margin-bottom: 25px">
+            <div>
+                <label for="inputPositions">Positions JSON:</label>
+                <br>
+                <textarea id="inputPositions" placeholder='[[x,y],[x,y]...]'>[[100,200], [500,500], [900,1500], [200,600], [500,100], [45,650], [100,1150], [500,200]]</textarea>
+            </div>
+            <!-- When we had less array elements the diagram was produced without error -->
+        </div>
+
+
+        <button id="getDelaunayData">Get Delaunay Data</button>
+    </section>
+
+    <section style="width: 70%">
+        <div id="delaunayWrapper">
+            <div id="delaunayResult"></div>
+        </div>
+    </section>
+</main>
 
 <script type="module" src="src/delaunay.js"></script>
 </body>
