@@ -1,22 +1,22 @@
-import React, { useEffect, useRef } from 'react';
-import { generateDelaunay } from '../delaunay/delaunay';
+import React, { useEffect, useRef } from 'react'
 
-const CaveResult = ({ settings, style = {} }) => {
-    const svgRef = useRef();
+const CaveResult = ({ delaunayGraph, style = {} }) => {
+    const svgRef = useRef()
 
     useEffect(() => {
-        svgRef.current.innerHTML = '';
-
-        generateDelaunay(svgRef, settings);
-    }, [settings]);
+        if (delaunayGraph !== null) {
+            svgRef.current.innerHTML = ''
+            delaunayGraph.renderSVG(svgRef)
+        }
+    }, [delaunayGraph])
 
     return (
         <div style={style}>
             <svg ref={svgRef}>
             </svg>
         </div>
-    );
-};
+    )
+}
 
-export default CaveResult;
+export default CaveResult
 

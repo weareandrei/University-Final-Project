@@ -1,38 +1,47 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, {useState} from 'react'
 import './app.css'
 
 import CaveSettings from "./cave/caveSettings"
 import CaveResult from "./cave/caveResult"
+import DelaunayGraph from "./delaunay/delaunayGraph"
 
-export default class App extends React.Component {
+const App = () => {
 
-    static propTypes = {
+    const [delaunayGraph, setDelaunayGraph] = useState(null)
 
+    const handleInitialize = (settings) => {
+        const newDelaunayGraph = new DelaunayGraph(settings)
+        setDelaunayGraph(newDelaunayGraph);
     }
 
-    state = {
-        settings: null
-    }
-
-    render = () =>
+    return (
         <div style={style.appContainer}>
-            <CaveSettings onGenerate={this.generateCave}
+            <CaveSettings onInitialize={handleInitialize}
                           style={{width: '40%'}}/>
-            <CaveResult settings={this.state.settings}
+            <CaveResult delaunayGraph={delaunayGraph}
                         style={{
                             width: '60%',
                             marginLeft: '2%',
                             border: '1px black solid'
-            }}/>
+                        }}/>
         </div>
+    )
+}
 
-    generateCave = (settings) => {
-        console.log('settings', settings)
-        this.setState({
-            settings: settings
-        })
-    }
+const generateCave = (settings) => {
+    console.log('generateCave settings', settings)
+    this.setState({
+        settings: settings,
+        currentStage: 'generateCave'
+    })
+}
+
+const findCavePath = (cavePath) => {
+    console.log('findCavePath cavePath', cavePath)
+    this.setState({
+        cavePath: cavePath,
+        currentStage: 'findCavePath'
+    })
 }
 
 const style = {
@@ -42,3 +51,5 @@ const style = {
         padding: '15px'
     }
 }
+
+export default App

@@ -9,8 +9,6 @@ export const generateDelaunay = (svgRef, settings) => {
 
     const {
         cavePositions,
-        caveStartIndex,
-        caveEndIndex,
         maxCaveRadius
     } = settings
 
@@ -23,6 +21,20 @@ export const generateDelaunay = (svgRef, settings) => {
     const svgWithCircles = renderMaxCircles(svg, cavePositions, voronoi, maxCaveRadius)
 
     return svgWithCircles.node()
+}
+
+export const findPath = (svgRef, cavePath, cavePositions) => {
+
+    const { startCaveIndex, endCaveIndex } = cavePath
+    const {scaleX, scaleY} = determineGraphScale(cavePositions)
+
+    const delaunay = new Delaunay(cavePositions.flat())
+    const voronoi = delaunay.voronoi([0, 0, scaleX, scaleY])
+
+    let path = [start], i = start, c;
+    while ((c = delaunay._step(i, ...m)) >= 0 && c !== i && c !== start) {
+        path.push(i = c);
+    }
 }
 
 const determineGraphScale = (cavePositions) => {
@@ -195,19 +207,3 @@ const getPointsArray = () => {
 
     return pointsArray
 }
-
-// document.getElementById("getDelaunayData").addEventListener("click", function () {
-//     const resultContainer = document.getElementById("delaunayResult")
-//     const inputWidth = parseInt(document.getElementById("inputWidth").value, 10)
-//     const inputHeight = parseInt(document.getElementById("inputHeight").value, 10)
-//     const pointPositions = getPointsArray()
-//     console.log('pointPositions', pointPositions)
-//     const circleRadius = parseFloat(document.getElementById("circleRadius").value) || 5 // Set a default radius if not provided
-//
-//     // Clear previous content
-//     resultContainer.innerHTML = ""
-//
-//     // Generate and append the SVG to the result container
-//     const generatedSvg = generateDelaunay(inputWidth, inputHeight, pointPositions, circleRadius)
-//     resultContainer.appendChild(generatedSvg)
-// })

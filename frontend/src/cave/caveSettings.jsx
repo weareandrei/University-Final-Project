@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 
 export default class CaveSettings extends React.Component {
     static propTypes = {
-        onGenerate: PropTypes.func.isRequired,
+        onInitialize: PropTypes.func.isRequired,
         style: PropTypes.object
     }
 
@@ -21,6 +21,8 @@ export default class CaveSettings extends React.Component {
         startCaveIndex: "1",
         endCaveIndex: "5",
         cavesMaxRadius: "200",
+
+        delaunayDrawn: false
     }
 
     render = () => (
@@ -82,6 +84,16 @@ export default class CaveSettings extends React.Component {
                         Generate Cave Path
                     </Button>
                 </Grid>
+
+                {
+                    this.state.delaunayDrawn && (
+                        <Grid item xs={12}>
+                            <Button variant="outlined" onClick={this.findCavePath}>
+                                Find Cave Path
+                            </Button>
+                        </Grid>
+                    )
+                }
             </Grid>
         </Box>
     )
@@ -117,13 +129,21 @@ export default class CaveSettings extends React.Component {
 
 
     generateCavePath = () => {
-        const { cavePositions, startCaveIndex, endCaveIndex, cavesMaxRadius } = this.state
+        const { cavePositions, cavesMaxRadius } = this.state
 
-        this.props.onGenerate({
+        this.props.onInitialize({
             cavePositions: JSON.parse(cavePositions),
-            startCaveIndex: parseInt(startCaveIndex),
-            endCaveIndex: parseInt(endCaveIndex),
             cavesMaxRadius: parseInt(cavesMaxRadius),
         })
     }
+
+    findCavePath = () => {
+        const { startCaveIndex, endCaveIndex } = this.state
+
+        // this.props.onFindCavePath({
+        //         startCaveIndex: parseInt(startCaveIndex),
+        //         endCaveIndex: parseInt(endCaveIndex)
+        // })
+    }
+
 }
