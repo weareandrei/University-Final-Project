@@ -1,5 +1,8 @@
 import * as d3 from "d3"
 import { Delaunay } from "d3-delaunay"
+import findPaths from "../util/findPaths"
+import {map} from "lodash"
+import PathFinder from "../util/PathFinder";
 
 class DelaunayGraph {
 
@@ -11,6 +14,23 @@ class DelaunayGraph {
 
         this.delaunay = new Delaunay(this.cavePositions.flat())
         this.voronoi = this.delaunay.voronoi([0, 0, this.scaleX, this.scaleY])
+
+        // TODO: do I want to use delaunay or voronoi neighbors?
+        // const V = [...this.voronoi.neighbors(2)];
+        // const D = [...this.delaunay.neighbors(2)];
+        //
+        // console.log('V', V)
+        // console.log('D', D)
+
+        this.neighborSet = map(this.cavePositions, (point, i) => ({
+            pointIndex: i,
+            neighbors: [...this.voronoi.neighbors(i)]
+        }))
+        this.edges = findPaths(this.cavePositions, this.neighborSet)
+        this.pathFinder = new PathFinder({
+            points: this.cavePositions,
+            edges: this.edges
+        })
     }
 
     determineGraphScale = () => {
@@ -49,8 +69,15 @@ class DelaunayGraph {
 
         return svg
     }
+
+    findCavePath = ({ startIndex, endIndex }) => {
+        const startPoint = this.cavePositions[startIndex]
+
+        const shortestPath = this.pathFinder.findPath(startPoint)
+
+        console.log('shortestPath', shortestPath)
+    }
+
 }
-
-
 
 export default DelaunayGraph;

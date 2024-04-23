@@ -14,9 +14,14 @@ const App = () => {
         setDelaunayGraph(newDelaunayGraph);
     }
 
+    const handleFindPath = (settings) => {
+        delaunayGraph.findCavePath(settings)
+    }
+
     return (
         <div style={style.appContainer}>
             <CaveSettings onInitialize={handleInitialize}
+                          onFindPath={handleFindPath}
                           style={{width: '40%'}}/>
             <CaveResult delaunayGraph={delaunayGraph}
                         style={{
@@ -26,22 +31,6 @@ const App = () => {
                         }}/>
         </div>
     )
-}
-
-const generateCave = (settings) => {
-    console.log('generateCave settings', settings)
-    this.setState({
-        settings: settings,
-        currentStage: 'generateCave'
-    })
-}
-
-const findCavePath = (cavePath) => {
-    console.log('findCavePath cavePath', cavePath)
-    this.setState({
-        cavePath: cavePath,
-        currentStage: 'findCavePath'
-    })
 }
 
 const style = {

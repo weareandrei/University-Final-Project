@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 export default class CaveSettings extends React.Component {
     static propTypes = {
         onInitialize: PropTypes.func.isRequired,
+        onFindPath: PropTypes.func.isRequired,
         style: PropTypes.object
     }
 
@@ -81,7 +82,7 @@ export default class CaveSettings extends React.Component {
 
                 <Grid item xs={12}>
                     <Button variant="outlined" onClick={this.generateCavePath}>
-                        Generate Cave Path
+                        Generate Voronoi Diagrams
                     </Button>
                 </Grid>
 
@@ -130,6 +131,7 @@ export default class CaveSettings extends React.Component {
 
     generateCavePath = () => {
         const { cavePositions, cavesMaxRadius } = this.state
+        this.setState({ delaunayDrawn: true })
 
         this.props.onInitialize({
             cavePositions: JSON.parse(cavePositions),
@@ -140,10 +142,10 @@ export default class CaveSettings extends React.Component {
     findCavePath = () => {
         const { startCaveIndex, endCaveIndex } = this.state
 
-        // this.props.onFindCavePath({
-        //         startCaveIndex: parseInt(startCaveIndex),
-        //         endCaveIndex: parseInt(endCaveIndex)
-        // })
+        this.props.onFindPath({
+                startIndex: parseInt(startCaveIndex),
+                endIndex: parseInt(endCaveIndex)
+        })
     }
 
 }
