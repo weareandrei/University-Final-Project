@@ -1,7 +1,7 @@
-import measureDistanceBetweenPoints from "./measureDistanceBetweenPoints"
-import {find, map} from "lodash";
+import {measureDistanceBetweenPoints} from "./measureDistanceBetweenPoints.js"
+import {find, map} from "lodash"
 
-const findPaths = (points, neighborSets) => {
+export const findPaths = (points, neighborSets) => {
     const paths = [];
 
     for (let i = 0; i < points.length; i++) {
@@ -42,4 +42,5 @@ const findNeighborCoordinates = (index, neighborSets, points) => {
     return map(neighborSet.neighbors, (neighborIndex) => points[neighborIndex])
 }
 
-export default findPaths;
+// export default findPaths;
+// module.exports = findPaths // for testing

@@ -1,10 +1,10 @@
 import * as d3 from "d3"
 import { Delaunay } from "d3-delaunay"
-import findPaths from "../util/findPaths"
+import {findPaths} from "../util/findPaths.js"
 import {map} from "lodash"
-import PathFinder from "../util/PathFinder";
+import {PathFinder} from "../util/PathFinder.js";
 
-class DelaunayGraph {
+export class DelaunayGraph {
 
     constructor(settings) {
         this.cavePositions = settings.cavePositions
@@ -74,10 +74,10 @@ class DelaunayGraph {
         const startPoint = this.cavePositions[startIndex]
 
         const shortestPath = this.pathFinder.findPath(startPoint)
-
         console.log('shortestPath', shortestPath)
     }
 
 }
 
-export default DelaunayGraph;
+// export default DelaunayGraph;
+// module.exports = DelaunayGraph // for testing

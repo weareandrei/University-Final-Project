@@ -1,4 +1,5 @@
-const measureDistanceBetweenPoints = (point_a, point_b) => {
+export const measureDistanceBetweenPoints = (point_a, point_b) => {
+    // console.log('measureDistanceBetweenPoints', point_a, point_b);
     const [x1, y1] = point_a;
     const [x2, y2] = point_b;
 
@@ -7,4 +8,5 @@ const measureDistanceBetweenPoints = (point_a, point_b) => {
 
 
 
-export default measureDistanceBetweenPoints;
+// export default measureDistanceBetweenPoints;
+// module.exports = measureDistanceBetweenPoints // for testing

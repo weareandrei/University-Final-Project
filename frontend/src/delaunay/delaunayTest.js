@@ -1,4 +1,4 @@
-import { generateDelaunay, findClosestNeighbourDistance } from './delaunay.js'
+import { generateDelaunay, findClosestNeighbourDistance } from './delaunay'
 
 const run = () => {
     // const inputWidth = 1000

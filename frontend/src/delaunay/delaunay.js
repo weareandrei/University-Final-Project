@@ -121,7 +121,7 @@ const renderMaxCircles = (svg, positions, voronoi, maxCirleRadius) => {
 
     return svg
 }
-const findClosestNeighbourDistance = (currentPosition, neighbourPositions, maxCirleRadius) => {
+export const findClosestNeighbourDistance = (currentPosition, neighbourPositions, maxCirleRadius) => {
     let smallestDistance = maxCirleRadius
 
     for (let index = 0; index < neighbourPositions.length; index++) {

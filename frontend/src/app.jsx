@@ -3,7 +3,7 @@ import './app.css'
 
 import CaveSettings from "./cave/caveSettings"
 import CaveResult from "./cave/caveResult"
-import DelaunayGraph from "./delaunay/delaunayGraph"
+import {DelaunayGraph} from "./delaunay/delaunayGraph"
 
 const App = () => {
 
