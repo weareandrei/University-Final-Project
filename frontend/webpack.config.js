@@ -1,16 +1,24 @@
-const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const {CleanWebpackPlugin} = require('clean-webpack-plugin')
+import path from 'path'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import {CleanWebpackPlugin} from'clean-webpack-plugin'
+
+const plugins = {
+    plugins: [
+        new CleanWebpackPlugin(),
+        new HtmlWebpackPlugin({
+            title: 'IndividualProject',
+            template: './index.html'
+        })
+    ]
+}
 
 const cssModule = {
     test: /\.css$/,
     use: [
         'style-loader',
-        'css-loader',
-        // 'postcss-loader', // Add postcss-loader here
+        'css-loader'
     ],
 };
-
 
 const babelLoader = {
     test: /\.jsx?$/,
@@ -30,24 +38,11 @@ const modules = {
     }
 }
 
-const plugins = {
-    plugins: [
-        new CleanWebpackPlugin(),
-        new HtmlWebpackPlugin({
-            title: 'Omega',
-            template: './index.html'
-        })
-    ]
-}
-
-module.exports = {
+export default {
     mode: 'development',
-    entry: {
-        main:path.join(__dirname, './src/development.jsx')
-    },
+    entry: './src/development.jsx',
     output: {
-        path: path.join(__dirname, './dist'),
-        filename: 'bundle.js'
+        filename: 'bundle.js',
     },
     resolve: {
         extensions: ['.js', '.jsx']
@@ -55,9 +50,9 @@ module.exports = {
     devServer: {
         historyApiFallback: true,
         static: {
-            directory: path.join(__dirname, './dist'), // Adjust this to your output directory
+            // directory: path.join(__dirname, './dist'),
         },
-        port: 8080, // You can change the port to your desired value
+        port: 8080,
     },
     ...modules,
     ...plugins

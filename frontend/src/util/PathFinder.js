@@ -18,30 +18,37 @@ export class PathFinder {
         //         reachedDestination: boolean
         //     },
         //     ...
-        ]
+        // ]
     }
 
     findPath = (startPoint, endPoint) => {
         // Initialize first paths with 1 edge each. Each edge is the edge adjacent to startPoint
         this.initializePaths(startPoint)
+        let count = 0
 
-        while(!this.foundShortestPath(endPoint)) {
+        while(count < 1000 && !this.foundShortestPath()) {
+            count++
             this.progressPathFinding(endPoint)
         }
 
         const shortestPath = this.getShortestPath(this.currentPathfindingProgress)
+        console.log('final shortestPath', shortestPath)
 
-        return ['1']
+        return shortestPath
     }
 
     progressPathFinding = (destination) => {
-        console.log('')
-        console.log('')
-        console.log('progressPathFinding()')
+        // console.log('')
+        // console.log('')
+        // console.log('progressPathFinding()')
+        // console.log('')
+
         console.log('this.currentPathfindingProgress', this.currentPathfindingProgress)
+        // console.log('')
         this.currentPathfindingProgress = flatMap(this.currentPathfindingProgress, (pathProgress) => {
 
-            console.log('pathProgress', pathProgress)
+            // console.log('destination', destination)
+            // console.log('pathProgress', pathProgress)
 
             // if already reached destination -> don't progress
             if (pathProgress.reachedDestination) {
@@ -50,19 +57,22 @@ export class PathFinder {
 
             const lastPoint = [pathProgress.path[pathProgress.path.length - 1].b[0], pathProgress.path[pathProgress.path.length - 1].b[1]] // [x,y]
             const adjacentEdges = this.findAdjacentEdges(lastPoint)
-            console.log('adjacentEdges', adjacentEdges)
+            // console.log('adjacentEdges', adjacentEdges)
 
-            console.log('')
-            console.log('-- newPaths forming')
+            // console.log('')
+            // console.log('-- newPaths forming')
             const newPaths = flatMap(adjacentEdges, (adjacentEdge) => {
-                console.log('adjacentEdge', adjacentEdge)
-                console.log('checking this.edgeAlreadyInPath()', pathProgress.path, adjacentEdge)
+                // console.log('  adjacentEdge', adjacentEdge)
+                // console.log('  checking this.edgeAlreadyInPath()', pathProgress.path, adjacentEdge)
                 // check if this adjacent edge is not in current path
                 if (this.edgeAlreadyInPath(pathProgress.path, adjacentEdge)) {
+                    // console.log('  edgeAlreadyInPath')
                     return []
                 }
+                // console.log('  !edgeAlreadyInPath')
 
                 const newPathEdges = [...pathProgress.path, adjacentEdge]
+                // console.log('  updated path =', newPathEdges)
                 return {
                     path: newPathEdges,
                     totalCost: this.findTotalCost(newPathEdges),
@@ -105,6 +115,7 @@ export class PathFinder {
             }
         })
 
+        console.log('getShortestPath, shortestPath =', shortestPath)
         return shortestPath
     }
 
@@ -117,13 +128,16 @@ export class PathFinder {
         return totalPathCost
     }
 
-    foundShortestPath = (destination) => {
-        const shortestPath = this.getShortestPath(destination)
+    foundShortestPath = () => {
+        const shortestPath = this.getShortestPath(this.currentPathfindingProgress)
         return shortestPath !== undefined
     }
 
     initializePaths = (startPoint) => {
+        // console.log('initializePaths')
         const adjacentEdges = this.findAdjacentEdges(startPoint)
+        // console.log('adjacentEdges to point', startPoint)
+        // console.log('adjacentEdges =', adjacentEdges)
         this.currentPathfindingProgress = map(adjacentEdges, (edge) => ({
             path: [edge],
             totalCost: edge.distance,
@@ -131,11 +145,22 @@ export class PathFinder {
         }))
     }
 
-    findAdjacentEdges = (startPoint) =>
-        filter(this.edges, (edge) =>
-            (edge.a[0] === startPoint[0] && edge.a[1] === startPoint[1])
-            ||
-            (edge.b[0] === startPoint[0] && edge.b[1] === startPoint[1]))
+    findAdjacentEdges = (startPoint) => {
+        const adjacentEdges = filter(this.edges, (edge) =>
+          (edge.a[0] === startPoint[0] && edge.a[1] === startPoint[1])
+          ||
+          (edge.b[0] === startPoint[0] && edge.b[1] === startPoint[1]))
+
+        const correctlyRotatedEdges = map(adjacentEdges, (edge) =>
+            edge.b[0] === startPoint[0] && edge.b[1] === startPoint[1] ? {
+                  a: edge.b,
+                  b: edge.a,
+                  distance: edge.distance,
+              } : edge
+        )
+
+        return correctlyRotatedEdges
+    }
 }
 
 // export default PathFinder

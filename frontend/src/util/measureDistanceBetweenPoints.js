@@ -6,7 +6,5 @@ export const measureDistanceBetweenPoints = (point_a, point_b) => {
     return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 }
 
-
-
 // export default measureDistanceBetweenPoints;
 // module.exports = measureDistanceBetweenPoints // for testing

@@ -72,8 +72,9 @@ export class DelaunayGraph {
 
     findCavePath = ({ startIndex, endIndex }) => {
         const startPoint = this.cavePositions[startIndex]
+        const endPoint = this.cavePositions[endIndex]
 
-        const shortestPath = this.pathFinder.findPath(startPoint)
+        const shortestPath = this.pathFinder.findPath(startPoint, endPoint)
         console.log('shortestPath', shortestPath)
     }
 
