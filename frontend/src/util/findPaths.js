@@ -37,7 +37,9 @@ const pathAlreadyExists = (paths, point1, point2) => {
     return found !== undefined
 }
 
-const findNeighborCoordinates = (index, neighborSets, points) => {
+export const findNeighborCoordinates = (index, neighborSets, points) => {
+    console.log('')
+    console.log('findNeighborCoordinates', index, neighborSets, points)
     const neighborSet = find(neighborSets, (neighborSet) => neighborSet.pointIndex === index)
     return map(neighborSet.neighbors, (neighborIndex) => points[neighborIndex])
 }

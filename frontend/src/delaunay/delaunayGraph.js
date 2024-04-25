@@ -1,7 +1,7 @@
 import * as d3 from "d3"
 import { Delaunay } from "d3-delaunay"
-import {findPaths} from "../util/findPaths.js"
-import {map} from "lodash"
+import { findNeighborCoordinates, findPaths } from '../util/findPaths.js'
+import { find, map } from 'lodash'
 import {PathFinder} from "../util/PathFinder.js";
 
 export class DelaunayGraph {
@@ -36,6 +36,7 @@ export class DelaunayGraph {
 
         this.pathDisplayed = null
         this.SVG_REF = undefined
+        this.caveRooms = []
     }
 
     setRef = (SVG_REF) => {
@@ -92,6 +93,23 @@ export class DelaunayGraph {
             })
         }
 
+        if (this.caveRooms.length > 0) {
+            console.log('rendering this.caveRooms', this.caveRooms)
+            map(this.caveRooms, (roomPoints) => {
+                var line = d3.line()
+                  .x(function(d) { return d[0]; })
+                  .y(function(d) { return d[1]; })
+
+                svg.append("path")
+                  .datum(roomPoints)
+                  .attr("fill", "blue")
+                  .attr("stroke", "none")
+                  .attr("d", d3.line().curve(d3.curveLinearClosed))
+
+            })
+
+        }
+
         return svg
     }
 
@@ -103,6 +121,51 @@ export class DelaunayGraph {
         console.log('shortestPath', shortestPath)
         this.pathDisplayed = shortestPath
     }
+
+    extendCaveStructure = (caveWidth) => {
+        this.caveRooms = []
+        console.log('')
+        console.log('')
+        console.log('iterating over this.pathDisplayed', this.pathDisplayed)
+        for (let i = 0; i < this.pathDisplayed.length; i++) {
+            const centerPoint = this.pathDisplayed[i].a
+            const pointIndex = this.findIndexOfPoint(centerPoint)
+            const neighbourPoints = findNeighborCoordinates(pointIndex, this.neighborSet, this.cavePositions)
+            console.log('')
+            console.log('neighbourPoints', neighbourPoints)
+
+            const pointsBetweenCenterAndNeighbours = this.pointsBetween(centerPoint, neighbourPoints);
+            console.log('pointsBetweenCenterAndNeighbours', pointsBetweenCenterAndNeighbours);
+
+            this.caveRooms = [pointsBetweenCenterAndNeighbours, ...this.caveRooms]
+            console.log('extendedCaveRoom list')
+        }
+    }
+
+    pointsBetween = (centerPoint, neighborPoints) => {
+        let points = [];
+        for (let i = 0; i < neighborPoints.length; i++) {
+            const neighborPoint = neighborPoints[i];
+            // Calculate midpoint
+            const midX = (centerPoint[0] + neighborPoint[0]) / 2;
+            const midY = (centerPoint[1] + neighborPoint[1]) / 2;
+            points.push([midX, midY]);
+        }
+        return points;
+    }
+
+
+    findIndexOfPoint = (targetPoint) => {
+        for (let i = 0; i < this.cavePositions.length; i++) {
+            const point = this.cavePositions[i];
+            if (point[0] === targetPoint[0] && point[1] === targetPoint[1]) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
 
 }
 

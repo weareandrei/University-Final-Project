@@ -10,6 +10,7 @@ export default class CaveSettings extends React.Component {
     static propTypes = {
         onInitialize: PropTypes.func.isRequired,
         onFindPath: PropTypes.func.isRequired,
+        onExtendCaveStructure: PropTypes.func.isRequired,
         style: PropTypes.object
     }
 
@@ -22,8 +23,10 @@ export default class CaveSettings extends React.Component {
         startCaveIndex: "1",
         endCaveIndex: "5",
         cavesMaxRadius: "200",
+        caveWidth: '100',
 
-        delaunayDrawn: false
+        delaunayDrawn: false,
+        pathDrawn: false
     }
 
     render = () => (
@@ -69,16 +72,16 @@ export default class CaveSettings extends React.Component {
                     </Paper>
                 </Grid>
 
-                <Grid item xs={12}>
-                    <Paper>
-                        <TextField
-                            label="Caves Max Radius"
-                            fullWidth
-                            value={this.state.cavesMaxRadius}
-                            onChange={(e) => this.handleChange("cavesMaxRadius", e.target.value)}
-                        />
-                    </Paper>
-                </Grid>
+                {/*<Grid item xs={12}>*/}
+                {/*    <Paper>*/}
+                {/*        <TextField*/}
+                {/*            label="Caves Max Radius"*/}
+                {/*            fullWidth*/}
+                {/*            value={this.state.cavesMaxRadius}*/}
+                {/*            onChange={(e) => this.handleChange("cavesMaxRadius", e.target.value)}*/}
+                {/*        />*/}
+                {/*    </Paper>*/}
+                {/*</Grid>*/}
 
                 <Grid item xs={12}>
                     <Button variant="outlined" onClick={this.generateCavePath}>
@@ -91,6 +94,25 @@ export default class CaveSettings extends React.Component {
                         <Grid item xs={12}>
                             <Button variant="outlined" onClick={this.findCavePath}>
                                 Find Cave Path
+                            </Button>
+                        </Grid>
+                    )
+                }
+
+                {
+                    this.state.pathDrawn && (
+                        <Grid style={{marginTop: '28px'}} item xs={12}>
+                            <Paper>
+                                <TextField
+                                  label="Caves Radius"
+                                  fullWidth
+                                  value={this.state.caveWidth}
+                                  onChange={(e) => this.handleChange("caveWidth", e.target.value)}
+                                />
+                            </Paper>
+
+                            <Button style={{marginTop: '12px'}} variant="outlined" onClick={this.extendCaveStructure}>
+                                Extend Cave Structure
                             </Button>
                         </Grid>
                     )
@@ -132,6 +154,7 @@ export default class CaveSettings extends React.Component {
     generateCavePath = () => {
         const { cavePositions, cavesMaxRadius } = this.state
         this.setState({ delaunayDrawn: true })
+        this.setState({ pathDrawn: false })
 
         this.props.onInitialize({
             cavePositions: JSON.parse(cavePositions),
@@ -147,6 +170,13 @@ export default class CaveSettings extends React.Component {
                 endIndex: parseInt(endCaveIndex)
         })
 
+        this.setState({ pathDrawn: true })
+
+    }
+
+    extendCaveStructure = (width) => {
+        const { caveWidth } = this.state
+        this.props.onExtendCaveStructure(caveWidth)
     }
 
 }

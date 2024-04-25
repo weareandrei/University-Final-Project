@@ -19,14 +19,22 @@ const App = () => {
         delaunayGraph.renderSVG()
     }
 
+    const handleExtendCaveStructure = (width) => {
+        delaunayGraph.extendCaveStructure(width)
+        console.log('renderSVG')
+        delaunayGraph.renderSVG()
+    }
+
     return (
         <div style={style.appContainer}>
             <CaveSettings onInitialize={handleInitialize}
                           onFindPath={handleFindPath}
+                          onExtendCaveStructure={handleExtendCaveStructure}
                           style={{width: '40%'}}/>
             <CaveResult delaunayGraph={delaunayGraph}
                         style={{
                             width: '60%',
+                            height: 'fit-content',
                             marginLeft: '2%',
                             border: '1px black solid'
                         }}/>
