@@ -16,6 +16,7 @@ const App = () => {
 
     const handleFindPath = (settings) => {
         delaunayGraph.findCavePath(settings)
+        delaunayGraph.renderSVG()
     }
 
     return (

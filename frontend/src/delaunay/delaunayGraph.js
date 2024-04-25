@@ -6,6 +6,8 @@ import {PathFinder} from "../util/PathFinder.js";
 
 export class DelaunayGraph {
 
+
+
     constructor(settings) {
         this.cavePositions = settings.cavePositions
         this.maxCaveRadius = settings.maxCaveRadius
@@ -31,6 +33,13 @@ export class DelaunayGraph {
             points: this.cavePositions,
             edges: this.edges
         })
+
+        this.pathDisplayed = null
+        this.SVG_REF = undefined
+    }
+
+    setRef = (SVG_REF) => {
+        this.SVG_REF = SVG_REF
     }
 
     determineGraphScale = () => {
@@ -47,9 +56,11 @@ export class DelaunayGraph {
         this.scaleY = maxY + 100
     }
 
-    renderSVG = (svgRef) => {
-        const svg = d3.select(svgRef.current)
+    renderSVG = () => {
+        const svg = d3.select(this.SVG_REF.current)
             .attr("viewBox", [0, 0, this.scaleX, this.scaleY])
+
+        svg.selectAll("*").remove();
 
         // Render Voronoi diagram
         svg
@@ -67,6 +78,20 @@ export class DelaunayGraph {
             .attr("stroke-width", 8)
             .attr("d", this.delaunay.renderPoints(null, 2))
 
+        console.log(this.pathDisplayed)
+
+        if (this.pathDisplayed !== null) {
+            map(this.pathDisplayed, (path) => {
+                const point1 = path.a
+                const point2 = path.b
+                svg
+                  .append('path')
+                  .attr('d', d3.line()([point1, point2]))
+                  .attr('stroke', 'orange')
+                  .attr('stroke-width', 10)
+            })
+        }
+
         return svg
     }
 
@@ -76,6 +101,7 @@ export class DelaunayGraph {
 
         const shortestPath = this.pathFinder.findPath(startPoint, endPoint)
         console.log('shortestPath', shortestPath)
+        this.pathDisplayed = shortestPath
     }
 
 }

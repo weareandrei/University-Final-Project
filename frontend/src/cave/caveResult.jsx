@@ -5,10 +5,15 @@ const CaveResult = ({ delaunayGraph, style = {} }) => {
 
     useEffect(() => {
         if (delaunayGraph !== null) {
-            svgRef.current.innerHTML = ''
-            delaunayGraph.renderSVG(svgRef)
+            renderResult()
         }
     }, [delaunayGraph])
+
+    const renderResult = () => {
+        svgRef.current.innerHTML = ''
+        delaunayGraph.setRef(svgRef)
+        delaunayGraph.renderSVG()
+    }
 
     return (
         <div style={style}>
