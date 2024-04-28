@@ -43,7 +43,7 @@ export class PathFinder {
         // console.log('progressPathFinding()')
         // console.log('')
 
-        console.log('this.currentPathfindingProgress', this.currentPathfindingProgress)
+        // console.log('this.currentPathfindingProgress', this.currentPathfindingProgress)
         // console.log('')
         this.currentPathfindingProgress = flatMap(this.currentPathfindingProgress, (pathProgress) => {
 
@@ -115,7 +115,7 @@ export class PathFinder {
             }
         })
 
-        console.log('getShortestPath, shortestPath =', shortestPath)
+        // console.log('getShortestPath, shortestPath =', shortestPath)
         return shortestPath
     }
 

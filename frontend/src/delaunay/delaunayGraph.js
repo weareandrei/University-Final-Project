@@ -3,12 +3,11 @@ import { Delaunay } from "d3-delaunay"
 import { findNeighborCoordinates, findPaths } from '../util/findPaths.js'
 import { find, map } from 'lodash'
 import {PathFinder} from "../util/PathFinder.js";
+import { createCanvas } from 'canvas'
 
 export class DelaunayGraph {
 
-
-
-    constructor(settings) {
+    constructor(settings, canvasRef) {
         this.cavePositions = settings.cavePositions
         this.maxCaveRadius = settings.maxCaveRadius
 
@@ -16,6 +15,7 @@ export class DelaunayGraph {
 
         this.delaunay = new Delaunay(this.cavePositions.flat())
         this.voronoi = this.delaunay.voronoi([0, 0, this.scaleX, this.scaleY])
+
 
         // TODO: do I want to use delaunay or voronoi neighbors?
         // const V = [...this.voronoi.neighbors(2)];
@@ -35,7 +35,7 @@ export class DelaunayGraph {
         })
 
         this.pathDisplayed = null
-        this.SVG_REF = undefined
+        this.canvasRef = canvasRef
         this.caveRooms = []
     }
 
@@ -93,22 +93,32 @@ export class DelaunayGraph {
             })
         }
 
-        if (this.caveRooms.length > 0) {
-            console.log('rendering this.caveRooms', this.caveRooms)
-            map(this.caveRooms, (roomPoints) => {
-                var line = d3.line()
-                  .x(function(d) { return d[0]; })
-                  .y(function(d) { return d[1]; })
+        if (this.pathDisplayed !== null) {
+            for (let i = 0; i < this.pathDisplayed.length; i++) {
+                const centerPoint = this.pathDisplayed[i].a
+                const pointIndex = this.findIndexOfPoint(centerPoint)
 
-                svg.append("path")
-                  .datum(roomPoints)
-                  .attr("fill", "blue")
-                  .attr("stroke", "none")
-                  .attr("d", d3.line().curve(d3.curveLinearClosed))
+                if (pointIndex !== null) {
+                    const V = [...this.voronoi.neighbors(this.colorSpecificVoronoiIndex)];
+                    const D = [...this.delaunay.neighbors(this.colorSpecificVoronoiIndex)];
+                    const U = D.filter(j => !V.includes(j));
 
-            })
+                    console.log("U:", U); // Check U array
 
+                    svg.append("g")
+                      .selectAll("path")
+                      .data(U)
+                      .enter().append("path")
+                      .attr("fill", "#ff0")
+                      .attr("d", j => this.voronoi.renderCell(j))
+                      .attr("stroke", "orange")
+                      .attr("stroke-width", 2);
+
+                    console.log("SVG element:", svg.node()); // Check SVG element
+                }
+            }
         }
+
 
         return svg
     }
@@ -122,24 +132,8 @@ export class DelaunayGraph {
         this.pathDisplayed = shortestPath
     }
 
-    extendCaveStructure = (caveWidth) => {
-        this.caveRooms = []
-        console.log('')
-        console.log('')
-        console.log('iterating over this.pathDisplayed', this.pathDisplayed)
-        for (let i = 0; i < this.pathDisplayed.length; i++) {
-            const centerPoint = this.pathDisplayed[i].a
-            const pointIndex = this.findIndexOfPoint(centerPoint)
-            const neighbourPoints = findNeighborCoordinates(pointIndex, this.neighborSet, this.cavePositions)
-            console.log('')
-            console.log('neighbourPoints', neighbourPoints)
+    extendCaveStructure = (svg, caveWidth) => {
 
-            const pointsBetweenCenterAndNeighbours = this.pointsBetween(centerPoint, neighbourPoints);
-            console.log('pointsBetweenCenterAndNeighbours', pointsBetweenCenterAndNeighbours);
-
-            this.caveRooms = [pointsBetweenCenterAndNeighbours, ...this.caveRooms]
-            console.log('extendedCaveRoom list')
-        }
     }
 
     pointsBetween = (centerPoint, neighborPoints) => {
