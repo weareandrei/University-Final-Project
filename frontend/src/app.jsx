@@ -2,8 +2,6 @@ import React, { useRef, useState } from 'react'
 import './app.css'
 
 import CaveSettings from "./cave/caveSettings"
-import CaveResult from "./cave/caveResult"
-import {DelaunayGraph} from "./delaunay/delaunayGraph"
 import {DelaunayGraph2} from "./delaunay/delaunayGraph2"
 
 const App = () => {
@@ -30,14 +28,6 @@ const App = () => {
                       onFindPath={handleFindPath}
                       onExtendCaveStructure={handleExtendCaveStructure}
                       style={{ width: '40%' }} />
-        {/*<CaveResult delaunayGraph={delaunayGraph}*/}
-        {/*            style={{*/}
-        {/*              width: '60%',*/}
-        {/*              height: 'fit-content',*/}
-        {/*              marginLeft: '2%',*/}
-        {/*              border: '1px black solid',*/}
-        {/*            }} />*/}
-
         <canvas ref={canvasRef} width={400} height={400} style={style.canvasContainer}/>
       </div>
     )

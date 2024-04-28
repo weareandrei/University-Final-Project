@@ -22,8 +22,17 @@ export class PathFinder {
     }
 
     findPath = (startPoint, endPoint) => {
+
+        console.log('')
+        console.log('----------------')
+        console.log('Pathfinder start')
+        console.log('----------------')
+        console.log('')
+
         // Initialize first paths with 1 edge each. Each edge is the edge adjacent to startPoint
-        this.initializePaths(startPoint)
+        this.initializePaths(startPoint, endPoint)
+
+        console.log('this.initializePaths(), this.currentPathfindingProgress', this.currentPathfindingProgress)
         let count = 0
 
         while(count < 1000 && !this.foundShortestPath()) {
@@ -38,17 +47,8 @@ export class PathFinder {
     }
 
     progressPathFinding = (destination) => {
-        // console.log('')
-        // console.log('')
-        // console.log('progressPathFinding()')
-        // console.log('')
-
-        // console.log('this.currentPathfindingProgress', this.currentPathfindingProgress)
-        // console.log('')
+        console.log('progress pathFinding', destination)
         this.currentPathfindingProgress = flatMap(this.currentPathfindingProgress, (pathProgress) => {
-
-            // console.log('destination', destination)
-            // console.log('pathProgress', pathProgress)
 
             // if already reached destination -> don't progress
             if (pathProgress.reachedDestination) {
@@ -57,22 +57,15 @@ export class PathFinder {
 
             const lastPoint = [pathProgress.path[pathProgress.path.length - 1].b[0], pathProgress.path[pathProgress.path.length - 1].b[1]] // [x,y]
             const adjacentEdges = this.findAdjacentEdges(lastPoint)
-            // console.log('adjacentEdges', adjacentEdges)
 
-            // console.log('')
-            // console.log('-- newPaths forming')
             const newPaths = flatMap(adjacentEdges, (adjacentEdge) => {
-                // console.log('  adjacentEdge', adjacentEdge)
-                // console.log('  checking this.edgeAlreadyInPath()', pathProgress.path, adjacentEdge)
                 // check if this adjacent edge is not in current path
                 if (this.edgeAlreadyInPath(pathProgress.path, adjacentEdge)) {
-                    // console.log('  edgeAlreadyInPath')
                     return []
                 }
-                // console.log('  !edgeAlreadyInPath')
 
                 const newPathEdges = [...pathProgress.path, adjacentEdge]
-                // console.log('  updated path =', newPathEdges)
+
                 return {
                     path: newPathEdges,
                     totalCost: this.findTotalCost(newPathEdges),
@@ -115,7 +108,6 @@ export class PathFinder {
             }
         })
 
-        // console.log('getShortestPath, shortestPath =', shortestPath)
         return shortestPath
     }
 
@@ -133,15 +125,12 @@ export class PathFinder {
         return shortestPath !== undefined
     }
 
-    initializePaths = (startPoint) => {
-        // console.log('initializePaths')
+    initializePaths = (startPoint, destination) => {
         const adjacentEdges = this.findAdjacentEdges(startPoint)
-        // console.log('adjacentEdges to point', startPoint)
-        // console.log('adjacentEdges =', adjacentEdges)
         this.currentPathfindingProgress = map(adjacentEdges, (edge) => ({
             path: [edge],
             totalCost: edge.distance,
-            reachedDestination: false
+            reachedDestination: edge.b[0] === destination[0] && edge.b[1] === destination[1]
         }))
     }
 

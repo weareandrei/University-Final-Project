@@ -35,7 +35,7 @@ export class DelaunayGraph2 {
             point: point,
             polygons: voronoiPolygons[index],
         }))
-        this.context.strokeStyle = '#040'
+        this.context.strokeStyle = '#fff'
 
         this.highlightedCells = []
 
@@ -159,7 +159,8 @@ const thickenWall = (wall, cellCenter) => {
 }
 
 const drawWall = (context, wall) => {
-    context.fillStyle = '#fff'
+    console.log('drawing wall', wall)
+    context.fillStyle = 'red'
     drawCell(context, wall)
     context.fill()
     context.stroke()
