@@ -97,8 +97,36 @@ export class DelaunayGraph2 {
     }
 }
 
+function removeDuplicatePolygons(points) {
+    const uniquePoints = [];
+    const pointSet = new Set(); // to keep track of unique points
+
+    for (const point of points) {
+        const key = point.join(','); // create a string representation of the point
+        if (!pointSet.has(key)) { // check if the point is already in the set
+            uniquePoints.push(point); // if not, add it to the unique points array
+            pointSet.add(key); // add the string representation to the set
+        }
+    }
+
+    return uniquePoints;
+
+}
+
 const drawEmptyCell = (context, cell, highlightedCellsFull) => {
-    const polygons = cell.polygons
+
+    console.log('')
+    console.log('')
+    console.log('')
+    console.log('')
+    console.log('----------------')
+    console.log('Draw Empty Cell ()')
+    console.log('  cell', cell.point)
+    console.log('  polygons', cell.polygons)
+    console.log('----------------')
+    console.log('')
+
+    const polygons = removeDuplicatePolygons(cell.polygons)
     const cellCenter = cell.point
 
     const startIndex = findStartWallIndex(
@@ -112,11 +140,10 @@ const drawEmptyCell = (context, cell, highlightedCellsFull) => {
     let totalWalls = []
     let currentWall = []
     console.log('')
-    console.log('')
     for (let i = 0; i < polygons.length; i++) {
         const realIndex = i+startIndex >= polygons.length  ? (i+startIndex - polygons.length) : i+startIndex
         console.log('--------------------------')
-        console.log('cellCentre ', cellCenter, 'polygons[realIndex]', polygons[realIndex])
+        console.log('polygons[realIndex]', polygons[realIndex])
         if (
             polygonConnectsEmptyCells(
                 polygons[realIndex],
@@ -146,17 +173,72 @@ const drawEmptyCell = (context, cell, highlightedCellsFull) => {
         totalWalls.push(currentWall)
     }
 
+    console.log('totalWalls', totalWalls)
     map(totalWalls, (wall) => {
         const thickenedWall = thickenWall(wall, cellCenter)
+        console.log('thickenedWall', thickenedWall)
         drawWall(context, thickenedWall)
     })
 }
 
 const thickenWall = (wall, cellCenter) => {
-    return flatMap(wall, polygon =>
-        thickenWallPolygon(polygon, cellCenter)
-    )
+    let thickenWallPolygons = []
+
+    map(wall, (polygon) => {
+        const { polygonOld, polygonNew } = thickenWallPolygon(polygon, cellCenter)
+        thickenWallPolygons = [polygonNew, ...thickenWallPolygons]
+    })
+
+    const noisyPolygons = addNoise(thickenWallPolygons, cellCenter, 50)
+    console.log('thickenWallPolygons', thickenWallPolygons)
+    console.log('noisyPolygons', noisyPolygons)
+    return [...wall, ...noisyPolygons]
 }
+
+const addNoise = (points, centerPoint, noiseLevel, addMorePoints=true) => {
+    return flatMap(points, (point, index) => {
+        const directionX = (centerPoint[0] - point[0]) > 0 ? 1: -1
+        const directionY = (centerPoint[1] - point[1]) > 0 ? 1: -1
+
+        const randomX = Math.random() * (noiseLevel - 0)
+        const randomY = Math.random() * (noiseLevel - 0)
+
+        const newPointX = point[0] + (randomX * directionX)
+        const newPointY = point[1] + (randomY * directionY)
+
+        let newRandomPoints = []
+        // if there is a next point in array of points
+        if (addMorePoints === true && points.length > index+1) {
+            newRandomPoints = addMoreRandomPointsInLine(point, points[index+1], centerPoint, noiseLevel)
+            console.log(' //// from point', point, 'and', points[index+1])
+            console.log(' //// generated noisy points', newRandomPoints)
+        }
+
+        return [[newPointX, newPointY], ...newRandomPoints]
+    })
+}
+
+const addMoreRandomPointsInLine = (point_a, point_b, centerPoint, noiseLevel) => {
+    const numberOfNewPoints = Math.random() * (10 - 0)
+    const newPoints = generatePointsBetween(point_a, point_b, numberOfNewPoints)
+
+    return addNoise(newPoints, centerPoint, noiseLevel, false)
+}
+
+function generatePointsBetween(a, b, n) {
+    const points = [];
+    const dx = (b[0] - a[0]) / (n + 1); // calculate the change in x
+    const dy = (b[1] - a[1]) / (n + 1); // calculate the change in y
+
+    for (let i = 1; i <= n; i++) {
+        const x = a[0] + dx * i; // interpolate x coordinate
+        const y = a[1] + dy * i; // interpolate y coordinate
+        points.push([x, y]); // add the point to the array
+    }
+
+    return points;
+}
+
 
 const drawWall = (context, wall) => {
     console.log('drawing wall', wall)
@@ -332,12 +414,12 @@ const thickenWallPolygon = (polygon, centerPoint) => {
     const normalizedDirectionY = directionY / magnitude
 
     // Expand the vertex in the direction of the center by 5 units
-    const expandedVertexX = polygon[0] + normalizedDirectionX * 20
-    const expandedVertexY = polygon[1] + normalizedDirectionY * 20
+    const expandedVertexX = polygon[0] + normalizedDirectionX * 10
+    const expandedVertexY = polygon[1] + normalizedDirectionY * 10
 
     const expandedPolygon = [expandedVertexX, expandedVertexY]
 
-    return [polygon, expandedPolygon]
+    return {polygonOld: polygon, polygonNew: expandedPolygon}
 }
 
 const drawCellPolygons = (context, polygons, fill) => {
@@ -347,18 +429,6 @@ const drawCellPolygons = (context, polygons, fill) => {
     context.fill()
     context.stroke()
     context.closePath()
-}
-
-const randomPoints = numberOfPoints => {
-    const points = []
-    for (let i = 0; i < numberOfPoints; i++) {
-        const point = {
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-        }
-        points.push(point)
-    }
-    return points
 }
 
 function drawCell(context, cell) {

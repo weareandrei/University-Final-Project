@@ -23,16 +23,15 @@ export class PathFinder {
 
     findPath = (startPoint, endPoint) => {
 
-        console.log('')
-        console.log('----------------')
-        console.log('Pathfinder start')
-        console.log('----------------')
-        console.log('')
+        // console.log('')
+        // console.log('----------------')
+        // console.log('Pathfinder start')
+        // console.log('----------------')
+        // console.log('')
 
         // Initialize first paths with 1 edge each. Each edge is the edge adjacent to startPoint
         this.initializePaths(startPoint, endPoint)
 
-        console.log('this.initializePaths(), this.currentPathfindingProgress', this.currentPathfindingProgress)
         let count = 0
 
         while(count < 1000 && !this.foundShortestPath()) {
@@ -47,7 +46,7 @@ export class PathFinder {
     }
 
     progressPathFinding = (destination) => {
-        console.log('progress pathFinding', destination)
+        // console.log('progress pathFinding', destination)
         this.currentPathfindingProgress = flatMap(this.currentPathfindingProgress, (pathProgress) => {
 
             // if already reached destination -> don't progress
