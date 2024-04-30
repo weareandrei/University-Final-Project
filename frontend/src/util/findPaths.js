@@ -1,21 +1,21 @@
-import {measureDistanceBetweenPoints} from "./measureDistanceBetweenPoints.js"
-import {find, map} from "lodash"
+import { measureDistanceBetweenPoints } from './measureDistanceBetweenPoints.js'
+import { find, map } from 'lodash'
 
 export const findPaths = (points, neighborSets) => {
-    const paths = [];
+    const paths = []
 
     for (let i = 0; i < points.length; i++) {
-        const point_a = points[i];
+        const point_a = points[i]
         const neighbors = findNeighborCoordinates(i, neighborSets, points)
 
         for (let j = 0; j < neighbors.length; j++) {
-            const point_b = neighbors[j];
-            const distance = measureDistanceBetweenPoints(point_a, point_b);
+            const point_b = neighbors[j]
+            const distance = measureDistanceBetweenPoints(point_a, point_b)
             if (!pathAlreadyExists(paths, point_a, point_b)) {
                 paths.push({
                     a: point_a,
                     b: point_b,
-                    distance: distance
+                    distance: distance,
                 })
             }
         }
@@ -25,14 +25,13 @@ export const findPaths = (points, neighborSets) => {
 }
 
 const pathAlreadyExists = (paths, point1, point2) => {
-    const found = find(paths, (path) => {
+    const found = find(paths, path => {
         if (path.a === point1 && path.b === point2) {
             return true
         }
         if (path.a === point2 && path.b === point1) {
             return true
         }
-
     })
     return found !== undefined
 }
@@ -40,8 +39,11 @@ const pathAlreadyExists = (paths, point1, point2) => {
 export const findNeighborCoordinates = (index, neighborSets, points) => {
     // console.log('')
     // console.log('findNeighborCoordinates', index, neighborSets, points)
-    const neighborSet = find(neighborSets, (neighborSet) => neighborSet.pointIndex === index)
-    return map(neighborSet.neighbors, (neighborIndex) => points[neighborIndex])
+    const neighborSet = find(
+        neighborSets,
+        neighborSet => neighborSet.pointIndex === index
+    )
+    return map(neighborSet.neighbors, neighborIndex => points[neighborIndex])
 }
 
 // export default findPaths;
