@@ -5,18 +5,18 @@ import CaveSettings from './cave/caveSettings'
 import { CaveGenerator } from './delaunay/caveGenerator'
 
 const App = () => {
-    const [delaunayGraph, setDelaunayGraph] = useState(null)
+    const [caveGenerator, setCaveGenerator] = useState(null)
     const canvasRef = useRef(null)
 
     const handleInitialize = settings => {
-        setDelaunayGraph(
+        setCaveGenerator(
             new CaveGenerator(settings.cavePositions, canvasRef.current)
         )
     }
 
     const handleFindPath = settings => {
-        delaunayGraph.findCavePath(settings)
-        delaunayGraph.renderCanvas()
+        caveGenerator.findCavePath(settings)
+        caveGenerator.renderCanvas()
     }
 
     return (

@@ -90,7 +90,7 @@ export default class CaveSettings extends React.Component {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <Button variant="outlined" onClick={this.generateCavePath}>
+                    <Button variant="outlined" onClick={this.generateVoronoiCave}>
                         Generate Voronoi Diagrams
                     </Button>
                 </Grid>
@@ -157,7 +157,7 @@ export default class CaveSettings extends React.Component {
         })
     }
 
-    generateCavePath = () => {
+    generateVoronoiCave = () => {
         const { cavePositions, cavesMaxRadius } = this.state
         this.setState({ delaunayDrawn: true })
         this.setState({ pathDrawn: false })
